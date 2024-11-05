@@ -1,4 +1,6 @@
-﻿using property_management_api.Models;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using property_management_api.Models;
 
 namespace property_management_api.Data.Repositories
 {
@@ -9,19 +11,25 @@ namespace property_management_api.Data.Repositories
         {
             _context = context;
         }
-        public Task AddPropertyAsync(Property property)
+        public async Task AddPropertyAsync(Property property)
         {
-            throw new NotImplementedException();
+            await _context.AddAsync(property);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Property>> GetAllPropertiesAsync()
+        public async Task<IEnumerable<Property>> GetAllPropertiesAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Properties.ToListAsync();
         }
 
-        public Task<Property> GetPropertyByIdAsync(int id)
+        public async Task<Property> GetPropertyByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var property = await _context.Properties.FindAsync(id);
+            if (property == null)
+            {
+                return null;
+            }
+            return property;
         }
     }
 }
